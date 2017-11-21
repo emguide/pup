@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Grid, Form, Button } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
@@ -8,64 +8,76 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import OAuthLoginButtons from '../../components/OAuthLoginButtons/OAuthLoginButtons';
 import InputHint from '../../components/InputHint/InputHint';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
+// import validate from '../../../modules/validate';
 
 class Signup extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.state = {
+      form: {
+        firstName: '',
+        lastName: '',
+        emailAddress: '',
+        password: '',
+      },
+    };
   }
 
-  componentDidMount() {
-    const component = this;
+  // componentDidMount() {
+  //   // TODO: validations
+  //   const component = this;
+  //
+  //   validate(component.form, {
+  //     rules: {
+  //       firstName: {
+  //         required: true,
+  //       },
+  //       lastName: {
+  //         required: true,
+  //       },
+  //       emailAddress: {
+  //         required: true,
+  //         email: true,
+  //       },
+  //       password: {
+  //         required: true,
+  //         minlength: 6,
+  //       },
+  //     },
+  //     messages: {
+  //       firstName: {
+  //         required: 'What\'s your first name?',
+  //       },
+  //       lastName: {
+  //         required: 'What\'s your last name?',
+  //       },
+  //       emailAddress: {
+  //         required: 'Need an email address here.',
+  //         email: 'Is this email address correct?',
+  //       },
+  //       password: {
+  //         required: 'Need a password here.',
+  //         minlength: 'Please use at least six characters.',
+  //       },
+  //     },
+  //     submitHandler() { component.handleSubmit(); },
+  //   });
+  // }
 
-    validate(component.form, {
-      rules: {
-        firstName: {
-          required: true,
-        },
-        lastName: {
-          required: true,
-        },
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-        password: {
-          required: true,
-          minlength: 6,
-        },
-      },
-      messages: {
-        firstName: {
-          required: 'What\'s your first name?',
-        },
-        lastName: {
-          required: 'What\'s your last name?',
-        },
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-        password: {
-          required: 'Need a password here.',
-          minlength: 'Please use at least six characters.',
-        },
-      },
-      submitHandler() { component.handleSubmit(); },
-    });
-  }
+  handleSubmit(event) {
+    event.preventDefault();
 
-  handleSubmit() {
     const { history } = this.props;
 
     Accounts.createUser({
-      email: this.emailAddress.value,
-      password: this.password.value,
+      email: this.state.form.emailAddress,
+      password: this.state.form.password,
       profile: {
         name: {
-          first: this.firstName.value,
-          last: this.lastName.value,
+          first: this.state.form.firstName,
+          last: this.state.form.lastName,
         },
       },
     }, (error) => {
@@ -79,14 +91,19 @@ class Signup extends React.Component {
     });
   }
 
+  handleInputChange({ target }) {
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({ form: { ...this.state.form, [target.name]: value } });
+  }
+
   render() {
     return (
-      <div className="Signup">
-        <Row>
-          <Col xs={12} sm={6} md={5} lg={4}>
+      <Grid centered className="Signup">
+        <Grid.Row>
+          <Grid.Column mobile={12} tablet={6} computer={5} widescreen={4}>
             <h4 className="page-header">Sign Up</h4>
-            <Row>
-              <Col xs={12}>
+            <Grid.Row>
+              <Grid.Column mobile={12}>
                 <OAuthLoginButtons
                   services={['facebook', 'github', 'google']}
                   emailMessage={{
@@ -94,60 +111,48 @@ class Signup extends React.Component {
                     text: 'Sign Up with an Email Address',
                   }}
                 />
-              </Col>
-            </Row>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-              <Row>
-                <Col xs={6}>
-                  <FormGroup>
-                    <ControlLabel>First Name</ControlLabel>
-                    <input
-                      type="text"
-                      name="firstName"
-                      ref={firstName => (this.firstName = firstName)}
-                      className="form-control"
-                    />
-                  </FormGroup>
-                </Col>
-                <Col xs={6}>
-                  <FormGroup>
-                    <ControlLabel>Last Name</ControlLabel>
-                    <input
-                      type="text"
-                      name="lastName"
-                      ref={lastName => (this.lastName = lastName)}
-                      className="form-control"
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-              <FormGroup>
-                <ControlLabel>Email Address</ControlLabel>
-                <input
-                  type="email"
-                  name="emailAddress"
-                  ref={emailAddress => (this.emailAddress = emailAddress)}
-                  className="form-control"
-                />
-              </FormGroup>
-              <FormGroup>
-                <ControlLabel>Password</ControlLabel>
-                <input
-                  type="password"
-                  name="password"
-                  ref={password => (this.password = password)}
-                  className="form-control"
-                />
-                <InputHint>Use at least six characters.</InputHint>
-              </FormGroup>
-              <Button type="submit" bsStyle="success">Sign Up</Button>
+              </Grid.Column>
+            </Grid.Row>
+            <Form onSubmit={this.handleSubmit}>
+              <Grid.Row>
+                <Grid.Column mobile={6}>
+                  <Form.Input
+                    onChange={this.handleInputChange}
+                    type="text"
+                    name="firstName"
+                    label="First Name"
+                  />
+                </Grid.Column>
+                <Grid.Column mobile={6}>
+                  <Form.Input
+                    onChange={this.handleInputChange}
+                    type="text"
+                    name="lastName"
+                    label="Last Name"
+                  />
+                </Grid.Column>
+              </Grid.Row>
+              <Form.Input
+                onChange={this.handleInputChange}
+                type="email"
+                name="emailAddress"
+                label="Email Address"
+              />
+              <Form.Input
+                onChange={this.handleInputChange}
+                type="password"
+                name="password"
+                label="Password"
+                placeholder="Use at least six characters."
+              />
+              <Button type="submit" positive>Sign Up</Button>
               <AccountPageFooter>
                 <p>Already have an account? <Link to="/login">Log In</Link>.</p>
               </AccountPageFooter>
-            </form>
-          </Col>
-        </Row>
-      </div>
+            </Form>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
   }
 }

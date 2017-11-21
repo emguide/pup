@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Alert, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Row, Col, Alert, FormGroup, ControlLabel, Button } from 'semantic-ui-react';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';

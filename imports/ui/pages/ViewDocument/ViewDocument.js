@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
+import { Button, Grid, Header } from 'semantic-ui-react';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
@@ -22,20 +22,23 @@ const handleRemove = (documentId, history) => {
 };
 
 const renderDocument = (doc, match, history) => (doc ? (
-  <div className="ViewDocument">
-    <div className="page-header clearfix">
-      <h4 className="pull-left">{ doc && doc.title }</h4>
-      <ButtonToolbar className="pull-right">
-        <ButtonGroup bsSize="small">
+  <Grid className="ViewDocument">
+    <Grid.Row>
+      <Grid.Column width={12}>
+        <Header as="h3">{ doc && doc.title }</Header>
+      </Grid.Column>
+      <Grid.Column width={4}>
+        <Button.Group floated="right">
           <Button onClick={() => history.push(`${match.url}/edit`)}>Edit</Button>
-          <Button onClick={() => handleRemove(doc._id, history)} className="text-danger">
-            Delete
-          </Button>
-        </ButtonGroup>
-      </ButtonToolbar>
-    </div>
-    { doc && doc.body }
-  </div>
+          <Button.Or />
+          <Button negative onClick={() => handleRemove(doc._id, history)}>Delete</Button>
+        </Button.Group>
+      </Grid.Column>
+    </Grid.Row>
+    <Grid.Row>
+      { doc && doc.body }
+    </Grid.Row>
+  </Grid>
 ) : <NotFound />);
 
 const ViewDocument = ({

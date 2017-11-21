@@ -1,16 +1,12 @@
 import React from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import { Nav, NavItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Menu } from 'semantic-ui-react';
 
 const PublicNavigation = () => (
-  <Nav pullRight>
-    <LinkContainer to="/signup">
-      <NavItem eventKey={1} href="/signup">Sign Up</NavItem>
-    </LinkContainer>
-    <LinkContainer to="/login">
-      <NavItem eventKey={2} href="/login">Log In</NavItem>
-    </LinkContainer>
-  </Nav>
+  <Menu.Menu position="right">
+    <Menu.Item key={1} as={Link} to="/signup">Sign Up</Menu.Item>
+    <Menu.Item key={2} as={Link} to="/login">Log In</Menu.Item>
+  </Menu.Menu>
 );
 
 export default PublicNavigation;

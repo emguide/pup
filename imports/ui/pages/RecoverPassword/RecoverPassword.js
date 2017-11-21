@@ -1,41 +1,49 @@
 import React from 'react';
-import { Row, Col, Alert, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Grid, Message, Form, Button } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { Bert } from 'meteor/themeteorchef:bert';
 import AccountPageFooter from '../../components/AccountPageFooter/AccountPageFooter';
-import validate from '../../../modules/validate';
+// import validate from '../../../modules/validate';
 
 class RecoverPassword extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.state = {
+      form: {
+        emailAddress: '',
+      },
+    };
   }
 
-  componentDidMount() {
-    const component = this;
+  // componentDidMount() {
+  //   const component = this;
+  //
+  //   validate(component.form, {
+  //     rules: {
+  //       emailAddress: {
+  //         required: true,
+  //         email: true,
+  //       },
+  //     },
+  //     messages: {
+  //       emailAddress: {
+  //         required: 'Need an email address here.',
+  //         email: 'Is this email address correct?',
+  //       },
+  //     },
+  //     submitHandler() { component.handleSubmit(); },
+  //   });
+  // }
 
-    validate(component.form, {
-      rules: {
-        emailAddress: {
-          required: true,
-          email: true,
-        },
-      },
-      messages: {
-        emailAddress: {
-          required: 'Need an email address here.',
-          email: 'Is this email address correct?',
-        },
-      },
-      submitHandler() { component.handleSubmit(); },
-    });
-  }
+  handleSubmit(event) {
+    event.preventDefault();
 
-  handleSubmit() {
     const { history } = this.props;
-    const email = this.emailAddress.value;
+    const email = this.state.form.emailAddress;
 
     Accounts.forgotPassword({ email }, (error) => {
       if (error) {
@@ -47,33 +55,35 @@ class RecoverPassword extends React.Component {
     });
   }
 
+  handleInputChange({ target }) {
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    this.setState({ form: { ...this.state.form, [target.name]: value } });
+  }
+
   render() {
     return (
-      <div className="RecoverPassword">
-        <Row>
-          <Col xs={12} sm={6} md={5} lg={4}>
+      <Grid centered className="RecoverPassword">
+        <Grid.Row>
+          <Grid.Column mobile={12} tablet={6} computer={5} widescreen={4}>
             <h4 className="page-header">Recover Password</h4>
-            <Alert bsStyle="info">
+            <Message info>
               Enter your email address below to receive a link to reset your password.
-            </Alert>
-            <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-              <FormGroup>
-                <ControlLabel>Email Address</ControlLabel>
-                <input
-                  type="email"
-                  name="emailAddress"
-                  ref={emailAddress => (this.emailAddress = emailAddress)}
-                  className="form-control"
-                />
-              </FormGroup>
-              <Button type="submit" bsStyle="success">Recover Password</Button>
+            </Message>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Input
+                onChange={this.handleInputChange}
+                type="email"
+                name="emailAddress"
+                label="Email Address"
+              />
+              <Button type="submit" positive>Recover Password</Button>
               <AccountPageFooter>
                 <p>Remember your password? <Link to="/login">Log In</Link>.</p>
               </AccountPageFooter>
-            </form>
-          </Col>
-        </Row>
-      </div>
+            </Form>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     );
   }
 }

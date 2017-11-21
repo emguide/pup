@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Grid } from 'react-bootstrap';
+import { Container } from 'semantic-ui-react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Roles } from 'meteor/alanning:roles';
@@ -42,9 +42,10 @@ const App = props => (
             emailVerified={props.emailVerified}
             emailAddress={props.emailAddress}
           />
-          : ''}
+          : ''
+        }
         <Navigation {...props} />
-        <Grid>
+        <Container>
           <Switch>
             <Route exact name="index" path="/" component={Index} />
             <Authenticated exact path="/documents" component={Documents} {...props} />
@@ -63,7 +64,7 @@ const App = props => (
             <Route name="examplePage" path="/example-page" component={ExamplePage} />
             <Route component={NotFound} />
           </Switch>
-        </Grid>
+        </Container>
         <Footer />
       </div>
     ) : ''}
